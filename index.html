@@ -1,138 +1,223 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>N Gera · Projects</title>
-  <meta name="description" content="Public projects by N Gera">
-  <style>
-    :root {
-      --bg: #fafaf9; --surface: #ffffff; --text: #1c1917; --muted: #78716c;
-      --border: #e7e5e4; --accent: #2563eb; --accent-soft: #eff6ff;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0c0a09; --surface: #1c1917; --text: #f5f5f4; --muted: #a8a29e;
-        --border: #292524; --accent: #60a5fa; --accent-soft: #172554;
-      }
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; background: var(--bg); color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.5;
-    }
-    .wrap { max-width: 960px; margin: 0 auto; padding: 56px 16px 80px; }
-    header h1 { margin: 0 0 4px; font-size: 2rem; letter-spacing: -0.02em; }
-    header p { margin: 0; color: var(--muted); }
-    header .links { margin-top: 12px; }
-    header .links a { margin-right: 16px; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects · N Gera</title>
+<meta name="description" content="Public projects by N Gera">
 
-    .toolbar { display: flex; gap: 12px; align-items: center; margin: 36px 0 20px; flex-wrap: wrap; }
-    .toolbar input {
-      flex: 1; min-width: 200px; padding: 10px 14px; font-size: 15px;
-      border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text);
-    }
-    .count { color: var(--muted); font-size: 14px; }
+<!-- Caliper (github.com/ngera/caliper). caliper.js FIRST and synchronous, or the
+     page flashes the wrong theme. To drop the CDN, copy caliper.js, caliper.css and
+     accents.css next to this file and change these three paths to ./caliper.js etc. -->
+<script src="https://cdn.jsdelivr.net/gh/ngera/caliper@main/caliper.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ngera/caliper@main/caliper.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ngera/caliper@main/accents.css">
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-    .card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      padding: 20px; display: flex; flex-direction: column; gap: 10px;
-      transition: border-color .15s, transform .15s;
-    }
-    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .card h2 { margin: 0; font-size: 1.1rem; word-break: break-word; }
-    .card p { margin: 0; color: var(--muted); font-size: 14px; flex: 1; }
-    .meta { display: flex; gap: 14px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
-    .actions { display: flex; gap: 16px; font-size: 14px; font-weight: 500; }
-    .badge {
-      font-size: 12px; padding: 2px 8px; border-radius: 999px;
-      background: var(--accent-soft); color: var(--accent);
-    }
-    .status { color: var(--muted); padding: 24px 0; }
-    footer { margin-top: 56px; color: var(--muted); font-size: 13px; }
-  </style>
+<style>
+  /* Page-level layout only. Tokens, no raw hex. */
+  .page { max-width: 1080px; margin: 0 auto; width: 100%; }
+  .search { position: relative; flex: 1; min-width: 220px; margin: 0; }
+  .search .icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--fg-3); }
+  .search .field__input { padding-left: 33px; }
+  .repo { display: flex; flex-direction: column; gap: var(--sp-2); }
+  .tabs { margin-bottom: calc(-1 * var(--sp-2)); }
+  .tabs:empty { display: none; }
+  .repo h2 { font-size: var(--fs-h2); word-break: break-word; }
+  .repo h2 a { color: var(--fg); }
+  .repo h2 a:hover { color: var(--accent); }
+  .repo__desc { flex: 1; color: var(--fg-2); margin: 0; }
+  .repo__meta { flex-wrap: wrap; gap: var(--sp-2); font-size: var(--fs-cap); color: var(--fg-3); }
+  .repo__actions { margin-top: var(--sp-2); padding-top: var(--sp-3); border-top: 1px solid var(--line-soft); gap: var(--sp-2); }
+  #notice:empty { display: none; }
+  footer.page { padding-top: 0; font-size: var(--fs-cap); color: var(--fg-3); }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>N Gera</h1>
-      <p>Solo founder and developer. These are the projects I'm working on in public.</p>
-      <div class="links">
-        <a href="https://github.com/ngera">GitHub</a>
-      </div>
-    </header>
 
-    <div class="toolbar">
-      <input id="search" type="search" placeholder="Filter projects…" aria-label="Filter projects">
-      <span class="count" id="count"></span>
+<header class="topbar">
+  <svg class="icon icon--lg" style="color: var(--accent)" aria-hidden="true"><use href="#i-spark"></use></svg>
+  <strong style="font-size: 14px;">N Gera</strong>
+  <span class="grow"></span>
+  <a class="btn btn--sm btn--ghost" href="https://github.com/ngera">
+    GitHub<svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg>
+  </a>
+  <button class="btn btn--sm btn--secondary btn--icon" data-caliper-toggle="theme"
+          aria-label="Toggle light and dark">
+    <svg class="icon" aria-hidden="true"><use href="#i-sun"></use></svg>
+  </button>
+</header>
+
+<main class="page">
+
+  <div class="row" style="align-items: flex-end;">
+    <div class="grow">
+      <h1>Projects</h1>
+      <p class="muted" style="margin-top: 5px;">Everything I'm building in public, newest activity first.</p>
     </div>
-
-    <main class="grid" id="repos"><div class="status">Loading projects…</div></main>
-
-    <footer>Repository list is pulled live from GitHub.</footer>
   </div>
 
-  <script>
-    const USER = "ngera";
-    const grid = document.getElementById("repos");
-    const count = document.getElementById("count");
-    const search = document.getElementById("search");
-    let repos = [];
+  <div class="statstrip" id="stats" aria-live="polite">
+    <div><div class="stat__label">Public repos</div><div class="stat__value stat__value--sm" id="s-repos">–</div></div>
+    <div><div class="stat__label">With a live page</div><div class="stat__value stat__value--sm" id="s-pages">–</div></div>
+    <div><div class="stat__label">Categories</div><div class="stat__value stat__value--sm" id="s-cats">–</div></div>
+    <div><div class="stat__label">Last push</div><div class="stat__value stat__value--sm" id="s-last">–</div></div>
+  </div>
 
-    const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  <div class="row" style="flex-wrap: wrap;">
+    <label class="field search">
+      <span class="sr">Filter projects</span>
+      <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+      <input class="field__input" id="q" type="search" placeholder="Filter by name, description, language or category">
+    </label>
+    <span class="muted nowrap" id="count" style="font-size: var(--fs-cap);"></span>
+  </div>
 
-    const fmtDate = iso => new Date(iso).toLocaleDateString(undefined,
-      { year: "numeric", month: "short", day: "numeric" });
+  <div id="notice"></div>
 
-    function render(list) {
-      count.textContent = `${list.length} project${list.length === 1 ? "" : "s"}`;
-      if (!list.length) {
-        grid.innerHTML = `<div class="status">No matching projects.</div>`;
-        return;
-      }
-      grid.innerHTML = list.map(r => `
-        <article class="card">
-          <h2>${esc(r.name)}</h2>
-          <p>${esc(r.description) || "No description yet."}</p>
-          <div class="meta">
-            ${r.language ? `<span>${esc(r.language)}</span>` : ""}
-            ${r.stargazers_count ? `<span>★ ${r.stargazers_count}</span>` : ""}
-            <span>Updated ${fmtDate(r.pushed_at)}</span>
-            ${r.has_pages ? `<span class="badge">Live page</span>` : ""}
-          </div>
-          <div class="actions">
-            ${r.has_pages ? `<a href="/${encodeURIComponent(r.name)}/">Project page →</a>` : ""}
-            <a href="${esc(r.html_url)}">Code</a>
-          </div>
-        </article>`).join("");
+  <nav class="tabs" id="jump" aria-label="Categories"></nav>
+
+  <div class="stack" id="repos" style="gap: var(--sp-6);">
+    <p class="muted">Loading projects…</p>
+  </div>
+
+</main>
+
+<footer class="page">
+  The list is read live from GitHub's public API, so private repos never appear here.
+</footer>
+
+<script>
+  const USER = "ngera";
+  const $ = id => document.getElementById(id);
+
+  // ── Categories ────────────────────────────────────────────────────────────
+  // label  = the heading shown on the page
+  // topics = GitHub topics that put a repo in this category (any one is enough)
+  // Order matters twice: it's the order of sections on the page, and a repo that
+  // matches several categories goes in the FIRST one (so voice + infrastructure
+  // lands in Voice Infra, not Voice AI). Repos matching nothing go in "Other".
+  const CATEGORIES = [
+    { label: "Voice Infra",   topics: ["voice-infra", "infrastructure"] },
+    { label: "Voice AI",      topics: ["voice-ai", "voice-agents", "voice"] },
+    { label: "Text Agents",   topics: ["text-agents", "sms", "agent"] },
+    { label: "Product Tools", topics: ["product-management", "market-research", "feedback"] },
+    { label: "Utilities",     topics: ["utilities", "utility-library", "tools"] },
+    { label: "Fin Tech",      topics: ["fintech"] },
+  ];
+  const OTHER = "Other";
+  const categoryOf = r =>
+    (CATEGORIES.find(c => c.topics.some(t => (r.topics || []).includes(t))) || { label: OTHER }).label;
+  let repos = [];
+
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  function ago(iso) {
+    const days = Math.floor((Date.now() - new Date(iso)) / 864e5);
+    if (days < 1) return "today";
+    if (days === 1) return "yesterday";
+    if (days < 30) return `${days}d ago`;
+    if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+    return `${Math.floor(days / 365)}y ago`;
+  }
+
+  function card(r) {
+    const page = `/${encodeURIComponent(r.name)}/`;
+    return `
+      <article class="card repo">
+        <div class="row" style="align-items: baseline;">
+          <h2 class="grow"><a href="${esc(r.html_url)}">${esc(r.name)}</a></h2>
+          ${r.has_pages ? `<span class="pill pill--ok">Live page</span>` : ""}
+        </div>
+        <p class="repo__desc">${esc(r.description) || `<span class="dim">No description yet.</span>`}</p>
+        <div class="row repo__meta">
+          ${r.language ? `<span class="tag">${esc(r.language)}</span>` : ""}
+          ${r.stargazers_count ? `<span class="tag">★ ${r.stargazers_count}</span>` : ""}
+          <span class="row" style="gap: 5px;"><svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>Updated ${ago(r.pushed_at)}</span>
+        </div>
+        <div class="row repo__actions">
+          ${r.has_pages ? `<a class="btn btn--sm btn--secondary" href="${page}">Project page</a>` : ""}
+          <a class="btn btn--sm btn--ghost" href="${esc(r.html_url)}">
+            Code<svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg>
+          </a>
+        </div>
+      </article>`;
+  }
+
+  const slug = s => "cat-" + s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+  function render(list) {
+    $("count").textContent = `${list.length} of ${repos.length} shown`;
+    if (!list.length) {
+      $("jump").innerHTML = "";
+      $("repos").innerHTML = `<div class="empty"><strong>No projects match that filter.</strong>
+        <p class="muted" style="margin-top: 4px;">Try a category, or a language like Python, or clear the box.</p></div>`;
+      return;
     }
+    const groups = [...CATEGORIES.map(c => c.label), OTHER]
+      .map(name => ({ name, items: list.filter(r => r.category === name) }))
+      .filter(g => g.items.length);
 
-    search.addEventListener("input", () => {
-      const q = search.value.trim().toLowerCase();
-      render(repos.filter(r =>
-        r.name.toLowerCase().includes(q) ||
-        (r.description || "").toLowerCase().includes(q) ||
-        (r.language || "").toLowerCase().includes(q)));
+    $("jump").innerHTML = groups.map(g =>
+      `<a class="tab" href="#${slug(g.name)}">${esc(g.name)} <span class="dim">${g.items.length}</span></a>`).join("");
+
+    $("repos").innerHTML = groups.map(g => `
+      <section id="${slug(g.name)}" aria-label="${esc(g.name)}">
+        <div class="row row--baseline" style="margin-bottom: var(--sp-3);">
+          <h2>${esc(g.name)}</h2>
+          <span class="tag">${g.items.length}</span>
+        </div>
+        <div class="grid grid--auto">${g.items.map(card).join("")}</div>
+      </section>`).join("");
+  }
+
+  function stats() {
+    const cats = new Set(repos.map(r => r.category));
+    const pages = repos.filter(r => r.has_pages).length;
+    $("s-repos").textContent = repos.length;
+    $("s-pages").innerHTML = `${pages} <span class="dim" style="font-size:12px;font-weight:400">/ ${repos.length}</span>`;
+    $("s-cats").textContent = cats.size;
+    $("s-last").textContent = repos.length ? ago(repos[0].pushed_at) : "–";
+  }
+
+  $("q").addEventListener("input", e => {
+    const q = e.target.value.trim().toLowerCase();
+    render(repos.filter(r =>
+      [r.name, r.description, r.language, r.category].some(v => (v || "").toLowerCase().includes(q))));
+  });
+
+  // This endpoint only ever returns PUBLIC repos; the filter below is belt-and-braces.
+  fetch(`https://api.github.com/users/${USER}/repos?per_page=100&type=owner&sort=pushed`)
+    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+    .then(data => {
+      repos = data
+        .filter(r => !r.private && !r.fork && !r.archived &&
+          ![`${USER}.github.io`, USER].includes(r.name.toLowerCase()))
+        .sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at))
+        .map(r => ({ ...r, category: categoryOf(r) }));
+      stats();
+      render(repos);
+    })
+    .catch(err => {
+      $("repos").innerHTML = "";
+      $("notice").innerHTML = `
+        <div class="banner banner--bad">
+          <svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg>
+          <span class="grow"><strong>GitHub didn't answer (${esc(err.message)}),</strong> so the project list can't be shown right now.</span>
+          <a href="https://github.com/${USER}?tab=repositories">View on GitHub</a>
+        </div>`;
     });
+</script>
 
-    // This endpoint returns only PUBLIC repos.
-    fetch(`https://api.github.com/users/${USER}/repos?per_page=100&type=owner&sort=pushed`)
-      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(data => {
-        repos = data.filter(r =>
-          !r.private && !r.fork && !r.archived &&
-          r.name.toLowerCase() !== `${USER}.github.io` &&
-          r.name.toLowerCase() !== USER);
-        render(repos);
-      })
-      .catch(() => {
-        grid.innerHTML = `<div class="status">Couldn't load projects right now.
-          <a href="https://github.com/${USER}?tab=repositories">See them on GitHub →</a></div>`;
-      });
-  </script>
+<!-- Caliper icon sprite (subset) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-alert"    viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 8v5M12 16.5v.01"/></symbol>
+  <symbol id="i-search"   viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+  <symbol id="i-sun"      viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5M2 12h2M20 12h2M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5"/></symbol>
+  <symbol id="i-clock"    viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="i-spark"    viewBox="0 0 24 24"><path d="M3 17l5-6 4 4 5-8 4 5"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></symbol>
+</svg>
+
 </body>
 </html>
