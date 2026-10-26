@@ -59,7 +59,7 @@
   .cat--2 { grid-column: span 2; --cols: 2; }
   .cat--3 { grid-column: 1 / -1;  --cols: 3; }
   .cat__head { display: flex; align-items: baseline; gap: var(--sp-2); margin-bottom: var(--sp-3); }
-  .cat__head h3 { font-size: var(--fs-h2); }
+  .cat__head h3 { font-size: var(--fs-h2); color: var(--accent); }
   .cat__cards { flex: 1; display: grid; gap: var(--sp-4); grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
   @media (max-width: 900px) {
     .cats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -254,10 +254,11 @@
 
   function card(r) {
     const page = `/${encodeURIComponent(r.name)}/`;
+    const nameHref = r.has_pages ? page : esc(r.html_url);
     return `
       <article class="card repo">
         <div class="row" style="align-items: baseline;">
-          <h4 class="grow"><a href="${esc(r.html_url)}">${esc(r.name)}</a></h4>
+          <h4 class="grow"><a href="${nameHref}">${esc(r.name)}</a></h4>
           ${r.has_pages ? `<span class="pill pill--ok">Live page</span>` : ""}
         </div>
         <p class="repo__desc">${esc(r.description) || `<span class="dim">No description yet.</span>`}</p>
@@ -267,9 +268,8 @@
           <span class="row" style="gap: 5px;"><svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>Updated ${ago(r.pushed_at)}</span>
         </div>
         <div class="row repo__actions">
-          ${r.has_pages ? `<a class="btn btn--sm btn--secondary" href="${page}">Project page</a>` : ""}
-          <a class="btn btn--sm btn--ghost" href="${esc(r.html_url)}">
-            Code<svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg>
+          <a class="btn btn--sm btn--secondary" href="${esc(r.html_url)}">
+            GitHub<svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg>
           </a>
         </div>
       </article>`;
