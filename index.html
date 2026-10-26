@@ -334,7 +334,7 @@
     .then(data => {
       repos = data
         .filter(r => !r.private && !r.fork && !r.archived &&
-          ![`${USER}.github.io`, USER].includes(r.name.toLowerCase()))
+          ![`${USER}.github.io`, USER, "caliper-pages"].includes(r.name.toLowerCase()))
         .sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at))
         .map(r => ({ ...r, category: categoryOf(r) }));
       stats();
