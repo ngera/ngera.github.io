@@ -9,6 +9,20 @@
 <!-- Caliper (github.com/ngera/caliper). caliper.js FIRST and synchronous, or the
      page flashes the wrong theme. To drop the CDN, copy caliper.js, caliper.css and
      accents.css next to this file and change these three paths to ./caliper.js etc. -->
+<script>
+  /* Site default is dark. One-time reset of a previously stored light preference
+     (from OS follow / earlier visits) so it can't override data-theme="dark". */
+  (function () {
+    var KEY = "caliper-theme", FLAG = "ngera-default-dark-v1";
+    try {
+      if (!localStorage.getItem(FLAG)) {
+        localStorage.setItem(KEY, "dark");
+        localStorage.setItem(FLAG, "1");
+        document.cookie = KEY + "=dark;path=/;max-age=31536000;samesite=lax";
+      }
+    } catch (e) {}
+  })();
+</script>
 <script src="https://cdn.jsdelivr.net/gh/ngera/caliper@main/caliper.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ngera/caliper@main/caliper.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ngera/caliper@main/accents.css">
